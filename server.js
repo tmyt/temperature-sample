@@ -13,6 +13,7 @@ app.get('/put', function(req, res) {
   temp = req.query.t;
   humm = req.query.h;
   io.emit('data', {temp, humm});
+  res.sendStatus(200);
 });
 
 io.on('connection', (socket) => {

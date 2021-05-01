@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 });
 // /put?temp=18.22&humm=22.70&key=room1
 // /put?temp=18.22&humm=22.70&key=room2
-// /put?temp=18.22&humm=22.70&key=room3
+// /put?temp=18.22&humm=22.70&key=room3&type=temp
 // /put?lux=1333&key=step1
 // /put?lux=1333&key=lobby2
 // /put?xxxxxxxxx
@@ -22,25 +22,21 @@ app.get('/put', function (req, res) {
     updated: new Date(),
   };
   io.to(key).emit('data', data[key]);
-  console.log(data[key])
+  console.log(data[key]);
   res.sendStatus(200);
 });
 
 // GET /なにか
 // GET /ほげ
 // GET /room1
-app.get('/:key', async function (req, res) {
+// GET /room1
+// GET /room1.temp
+app.get('/:key.:type', async function (req, res) {
+  const { key, type } = req.params;
+  if (!type) return res.sendStatus(500);
+  const html = await fs.readFile(`${__dirname}/${type}.html`, 'utf-8');
   res.set('content-type', 'text/html');
-  //if (key.startsWith('temp.')) {
-  //  const html = await fs.readFile(__dirname + '/temp.html', 'utf-8');
-  //  res.send(html.replace());
-  //}
-  //else if (key.statsWith('lux.')) {
-  //  const html = await fs.readFile(__dirname + '/lux.html');
-  //  res.send(html.replace());
-  //}
-  const html = await fs.readFile(__dirname + '/index.html', 'utf-8');
-  res.send(html.replace("%%key%%", req.params.key));
+  res.send(html.replace("%%key%%", key));
 });
 
 io.on('connection', (socket) => {

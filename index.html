@@ -15,11 +15,16 @@
     <span id="humm"></span>
     <span>%</span>
   </p>
+  <p>
+    <span>updated: </span>
+    <span id="updated"></span>
+  </p>
   <script>
     var socketio = io();
-    socketio.on('data', function({temp, humm}) {
+    socketio.on('data', function({temp, humm, updated}) {
       $("#temp").text(temp);
       $("#humm").text(humm);
+      $("#updated").text(updated);
     });
   </script>
 </body>

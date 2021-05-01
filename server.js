@@ -9,6 +9,21 @@ const data = {};
 app.get('/', (req, res) => {
   res.send('no content');
 });
+// /put?temp=18.22&humm=22.70&key=room1
+// /put?temp=18.22&humm=22.70&key=room2
+// /put?temp=18.22&humm=22.70&key=room3
+// /put?lux=1333&key=step1
+// /put?lux=1333&key=lobby2
+// /put?xxxxxxxxx
+app.get('/put', function (req, res) {
+  const { key, ...queries } = req.query;
+  data[key] = {
+    ...queries,
+    updated: new Date(),
+  };
+  io.to(key).emit('data', data[key]);
+  res.sendStatus(200);
+});
 
 // GET /なにか
 // GET /ほげ
@@ -25,22 +40,6 @@ app.get('/:key', async function (req, res) {
   //}
   const html = await fs.readFile(__dirname + '/index.html', 'utf-8');
    res.send(html.replace("%%key%%", req.params.key));
-});
-
-// /put?temp=18.22&humm=22.70&key=room1
-// /put?temp=18.22&humm=22.70&key=room2
-// /put?temp=18.22&humm=22.70&key=room3
-// /put?lux=1333&key=step1
-// /put?lux=1333&key=lobby2
-// /put?xxxxxxxxx
-app.get('/put', function (req, res) {
-  const { key, ...queries } = req.query;
-  data[key] = {
-    ...queries,
-    updated: new Date(),
-  };
-  io.to(key).emit('data', data[key]);
-  res.sendStatus(200);
 });
 
 io.on('connection', (socket) => {

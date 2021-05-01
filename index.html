@@ -1,31 +1,38 @@
 <!doctype html>
 <html>
+
 <head>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
+
 <body>
-  <p>
-    <span>temp: </span>
-    <span id="temp"></span>
-    <span>℃</span>
-  </p>
-  <p>
-    <span>humm: </span>
-    <span id="humm"></span>
-    <span>%</span>
-  </p>
-  <p>
-    <span>updated: </span>
-    <span id="updated"></span>
-  </p>
-  <script>
-    var socketio = io();
-    socketio.on('data', function({temp, humm, updated}) {
-      $("#temp").text(temp);
-      $("#humm").text(humm);
-      $("#updated").text(updated);
-    });
-  </script>
+    <p>
+        <span>temp: </span>
+        <span id="temp"></span>
+        <span>℃</span>
+    </p>
+    <p>
+        <span>humm: </span>
+        <span id="humm"></span>
+        <span>%</span>
+    </p>
+    <p>
+        <span>updated: </span>
+        <span id="updated"></span>
+    </p>
+    <script>
+        var socketio = io();
+        var roomKey = '%%key%%';
+        socketio.join(roomKey);
+
+        socketio.on('data', function ({ temp, humm, updated }) {
+            $("#temp").text(temp);
+            $("#humm").text(humm);
+            $("#updated").text(updated);
+        });
+        socketio.emit('init', roomKey);
+    </script>
 </body>
 
+</html>

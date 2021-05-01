@@ -34,9 +34,13 @@ app.get('/put', function (req, res) {
 app.get('/:key.:type', async function (req, res) {
   const { key, type } = req.params;
   if (!type) return res.sendStatus(500);
-  const html = await fs.readFile(`${__dirname}/${type}.html`, 'utf-8');
-  res.set('content-type', 'text/html');
-  res.send(html.replace("%%key%%", key));
+  try {
+    const html = await fs.readFile(`${__dirname}/${type}.html`, 'utf-8');
+    res.set('content-type', 'text/html');
+    res.send(html.replace("%%key%%", key));
+  } catch (e) {
+    res.sendStatus(404);
+  }
 });
 
 io.on('connection', (socket) => {

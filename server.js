@@ -22,7 +22,6 @@ app.get('/put', function (req, res) {
     updated: new Date(),
   };
   io.to(key).emit('data', data[key]);
-  console.log(data[key]);
   res.sendStatus(200);
 });
 

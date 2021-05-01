@@ -22,6 +22,7 @@ app.get('/put', function (req, res) {
     updated: new Date(),
   };
   io.to(key).emit('data', data[key]);
+  console.log(data[key])
   res.sendStatus(200);
 });
 
@@ -39,14 +40,14 @@ app.get('/:key', async function (req, res) {
   //  res.send(html.replace());
   //}
   const html = await fs.readFile(__dirname + '/index.html', 'utf-8');
-   res.send(html.replace("%%key%%", req.params.key));
+  res.send(html.replace("%%key%%", req.params.key));
 });
 
 io.on('connection', (socket) => {
-  socket.on('init',
-    (key) => {
-      socket.to(key).emit('data', data[key]);
-    });
+  socket.on('init', (key) => {
+    socket.join(key);
+    socket.emit('data', data[key] || {});
+  });
 });
 
 http.listen(process.env.PORT);
